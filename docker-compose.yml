@@ -1,0 +1,13 @@
+services:
+  baas:
+    build:
+      context: . # Dockerfile 所在目录
+    ports:
+      - "8006:3000" # 映射服务器的 3000 端口到容器
+    volumes:
+      - /root/remix/BaaS:/usr/src/app          # 挂载本地代码目录
+      - /usr/src/app/node_modules   # 排除 node_modules
+    environment:
+      - NODE_ENV=development        # 设置开发环境
+    command: npm run dev            # 运行开发模式
+    restart: always                 # 容器异常自动重启
