@@ -146,7 +146,7 @@ const notificationData = [
   },
   {
     id: 5,
-    avatar: "/img/enterprise/sinophgram.png",
+    avatar: "/img/enterprise/sinopharm.png",
     unit: "N某医药公司",
     time: "15分钟前",
     type: "存证溯源",

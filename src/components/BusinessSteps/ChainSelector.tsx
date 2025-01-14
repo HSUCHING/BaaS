@@ -5,13 +5,13 @@ const CHAIN_TEMPLATES = [
   {
     id: 1,
     name: "高性能子链",
-    description: "适用于高频交易场景，支持每秒数千笔交易",
+    description: "适用高频交易场景，支持每秒数千笔交易",
     tps: "5000+",
   },
   {
     id: 2,
     name: "隐私子链",
-    description: "适用于数据隐私要求高的场景，支持零知识证明",
+    description: "适用数据隐私要求高的场景，支持零知识证明",
     tps: "1000+",
   },
   // ... 更多模板

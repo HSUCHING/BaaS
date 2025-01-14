@@ -13,18 +13,9 @@ import {
   CogIcon,
   ArrowsUpDownIcon,
   MoonIcon,
-  CubeTransparent,
   CubeTransparentIcon
 } from "@heroicons/react/24/outline";
 import Logo from "./Logo";
-
-// const menuItems = [
-//   { icon: HomeIcon, label: 'Home', key: 'home' },
-//   { icon: CalendarIcon, label: 'Calendar', key: 'calendar' },
-//   { icon: UserGroupIcon, label: 'Team', key: 'team' },
-//   { icon: ChartBarIcon, label: 'Analytics', key: 'analytics' },
-//   { icon: DocumentIcon, label: 'Documents', key: 'documents' },
-// ]
 
 const menuItems = [
   { icon: HomeIcon, label: "主页", key: "home" },
@@ -53,7 +44,6 @@ export default function Sidebar({ isExpanded, setIsExpanded, setCurrentPage }: S
     setActiveItem(key)
     setCurrentPage(key)  // 更新当前页面
   }
-
 
   return (
     <div

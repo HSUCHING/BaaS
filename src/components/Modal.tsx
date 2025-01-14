@@ -21,7 +21,6 @@ export default function Modal({
 
   // 添加 useEffect 来控制 body 的 overflow
   useEffect(() => {
-    
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
