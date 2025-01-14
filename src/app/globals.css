@@ -3,19 +3,93 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #1C1C1E;
+  --foreground: #FFFFFF;
+  --card: rgba(40, 41, 43, 0.9);
+  --card-hover: rgba(40, 41, 43, 0.95);
+  --gold: #FFD700;
+  --gold-light: #FFE55C;
+  --gold-dark: #B8860B;
+  --secondary: #7C7C80;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
+
+*:focus {
+  @apply outline-none ring-0;
+}
+
+
+/* 自定义滚动条样式 */
+.message-scroll {
+  /* 滚动条整体部分 */
+  &::-webkit-scrollbar {
+    width: 4px;  /* 窄一点的滚动条 */
+  }
+
+  /* 滚动条轨道 */
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.04);  /* 与消息通知背景色一致 */
+    border-radius: 2px;
+  }
+
+  /* 滚动条滑块 */
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);  /* 黑灰色滑块 */
+    border-radius: 2px;
+  }
+
+  /* 鼠标悬停时的滑块样式 */
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.35);
+  }
+} 
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-88px);
+  }
+}
+
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+
+@keyframes drawerSlideIn {
+  0% {
+    transform: translateX(0%) rotateY(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(50%) rotateY(-25deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes drawerSlideOut {
+  0% {
+    transform: translateX(0) rotateY(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(50%) rotateY(-25deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0%) rotateY(0deg);
+    opacity: 0;
+  }
+} 
