@@ -48,7 +48,7 @@ export default function SceneCreator() {
           <SelectItem key="supply-chain" value="supply-chain">供应链</SelectItem>
         </Select>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center truncate">
           <span className="text-default-500">是否公开</span>
           <Switch defaultSelected />
         </div>

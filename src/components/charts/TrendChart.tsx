@@ -18,18 +18,18 @@ interface TrendDataItem {
 }
 
 const trendData: TrendDataItem[] = [
-  { month: "1月", transactions: 3200, activeUsers: 2800 },
-  { month: "2月", transactions: 4500, activeUsers: 3200 },
-  { month: "3月", transactions: 3800, activeUsers: 3600 },
-  { month: "4月", transactions: 5000, activeUsers: 4200 },
-  { month: "5月", transactions: 4900, activeUsers: 4800 },
-  { month: "6月", transactions: 6000, activeUsers: 5500 },
-  { month: "7月", transactions: 5500, activeUsers: 6200 },
-  { month: "8月", transactions: 6500, activeUsers: 7000 },
-  { month: "9月", transactions: 5800, activeUsers: 7800 },
-  { month: "10月", transactions: 7000, activeUsers: 8500 },
-  { month: "11月", transactions: 6800, activeUsers: 9200 },
-  { month: "12月", transactions: 7500, activeUsers: 10000 }
+  { month: "1月", transactions: 332200, activeUsers: 3100 },
+  { month: "2月", transactions: 562200, activeUsers: 2300 },
+  { month: "3月", transactions: 323800, activeUsers: 3200 },
+  { month: "4月", transactions: 583000, activeUsers: 4200 },
+  { month: "5月", transactions: 497200, activeUsers: 4800 },
+  { month: "6月", transactions: 621000, activeUsers: 5500 },
+  { month: "7月", transactions: 522500, activeUsers: 6200 },
+  { month: "8月", transactions: 436500, activeUsers: 7000 },
+  { month: "9月", transactions: 655800, activeUsers: 7800 },
+  { month: "10月", transactions: 767000, activeUsers: 8500 },
+  { month: "11月", transactions: 566800, activeUsers: 9200 },
+  { month: "12月", transactions: 767500, activeUsers: 10000 }
 ];
 
 export const TrendChart: React.FC = () => {

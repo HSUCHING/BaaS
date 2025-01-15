@@ -8,45 +8,14 @@ import {
   Chip,
   Progress,
   Checkbox,
-  Select,
-  SelectItem,
 } from "@nextui-org/react";
 import {
   ChainIcon,
   ManageIcon,
   UseIcon,
   OperateIcon,
-  ChartLineIcon,
-  BlockIcon,
-  TPSIcon,
-  NodeIcon,
-  ContractIcon,
-  AlertIcon,
-  ResourceIcon,
-  MarketIcon,
-  ToolIcon,
-  MessageIcon,
   WeatherIcon,
-  DocumentIcon,
-  SearchIcon,
-  AppIcon,
 } from "@/components/icons";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Legend,
-  CartesianGrid,
-  ComposedChart,
-  Cell,
-} from "recharts";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -58,9 +27,9 @@ import {
 import { ActivityRings, activityData } from "@/components/charts/ActivityRings";
 import { Sunburst } from "@/components/charts/Sunburst";
 import { OrganizationChart } from "@/components/charts/OrganizationChart";
-import { SankeyChart } from '../components/charts/SankeyChart';
-import { sankeyData } from '../components/charts/data/sankeyData';
-import { TrendChart } from '../components/charts/TrendChart';
+import { SankeyChart } from "../components/charts/SankeyChart";
+import { sankeyData } from "../components/charts/data/sankeyData";
+import { TrendChart } from "../components/charts/TrendChart";
 import Stepper from "@/components/Stepper";
 import Modal from "@/components/Modal";
 import ContractSelector from "@/components/BusinessSteps/ContractSelector";
@@ -69,60 +38,8 @@ import OrganizationSelector from "@/components/BusinessSteps/OrganizationSelecto
 import SceneCreator from "@/components/BusinessSteps/SceneCreator";
 import APICreator from "@/components/BusinessSteps/APICreator";
 import SetupComplete from "@/components/BusinessSteps/Complete";
-
-// 模拟的交易量数据
-const transactionData = [
-  {
-    date: "2024-01",
-    transactions: 3500,
-    activeUsers: 1200,
-    type: "采购",
-  },
-  {
-    date: "2024-02",
-    transactions: 4200,
-    activeUsers: 1500,
-    type: "销售",
-  },
-  {
-    date: "2024-03",
-    transactions: 3800,
-    activeUsers: 1800,
-    type: "物流",
-  },
-  {
-    date: "2024-04",
-    transactions: 5000,
-    activeUsers: 2200,
-    type: "金融",
-  },
-  {
-    date: "2024-05",
-    transactions: 4800,
-    activeUsers: 2500,
-    type: "其他",
-  },
-];
-
-// 模拟的交易类型占比数据
-const transactionTypeData = [
-  { name: "采购", value: 35, fill: "#0ea5e9" },
-  { name: "销售", value: 25, fill: "#22c55e" },
-  { name: "物流", value: 20, fill: "#eab308" },
-  { name: "金融", value: 15, fill: "#ec4899" },
-  { name: "其他", value: 5, fill: "#8b5cf6" },
-];
-
-// 模拟的组织参与度数据
-const organizationData = [
-  { month: "1月", count: 12 },
-  { month: "2月", count: 15 },
-  { month: "3月", count: 18 },
-  { month: "4月", count: 22 },
-  { month: "5月", count: 25 },
-  { month: "6月", count: 28 },
-];
-
+import BlockExplorer from "@/pages/BlockExplorer";
+// import Loading from '@/components/ui/Loading';
 // 添加性能指标数据
 const performanceMetrics = [
   {
@@ -198,16 +115,6 @@ const securityMetrics = [
     description: "共识达成率",
   },
 ];
-
-// 添加预置色变量
-const colors = {
-  purple: "rgb(123, 31, 162)",
-  violet: "rgb(103, 58, 183)",
-  pink: "rgb(244, 143, 177)",
-  black: "rgb(33, 33, 33)",
-  dred: "rgb(80, 50, 60)",
-  red: "rgb(102, 0, 0)",
-};
 
 // 更新卡片样式
 const cardStyles = {
@@ -585,51 +492,6 @@ const globalStyles = `
   }
 `;
 
-
-// 首先添加天气SVG定义
-const WeatherSVGDefs = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
-    <defs>
-      <radialGradient
-        id="gradYellow"
-        cx="50%"
-        cy="50%"
-        r="80%"
-        fx="90%"
-        fy="80%"
-      >
-        <stop offset="0%" style={{ stopColor: "yellow", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "orange", stopOpacity: 1 }} />
-      </radialGradient>
-      <radialGradient
-        id="gradDarkGray"
-        cx="50%"
-        cy="50%"
-        r="50%"
-        fx="50%"
-        fy="50%"
-      >
-        <stop offset="0%" style={{ stopColor: "white", stopOpacity: 1 }} />
-        <stop offset="70%" style={{ stopColor: "gray", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "dimgray", stopOpacity: 1 }} />
-      </radialGradient>
-      {/* ... 其他渐变定义 ... */}
-    </defs>
-    <symbol id="sun">
-      <circle cx="50" cy="50" r="20" fill="url(#gradYellow)" />
-      <line x1="50" y1="27" x2="50" y2="2" className="longRay" />
-      {/* ... 其他太阳射线 ... */}
-    </symbol>
-    <symbol id="moon">
-      <path
-        d="M60,20 A30,30 0 1,0 90,65 22,22 0 1,1 60,20z"
-        fill="url(#gradYellow)"
-      />
-    </symbol>
-    {/* ... 添加其他天气符号定义 ... */}
-  </svg>
-);
-
 // 修改日期时间组件
 const DateTime = () => {
   // 使用 useEffect 来避免 SSR 不匹配问题
@@ -1006,7 +868,7 @@ interface Step {
   id: number;
   title: string;
   subtitle: string;
-  status: 'complete' | 'current' | 'pending';
+  status: "complete" | "current" | "pending";
 }
 
 // 添加 Stepper 配置
@@ -1055,7 +917,7 @@ export default function Homepage() {
   // 添加 Modal 控制状态
   const [isSetupModalOpen, setIsSetupModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-
+  const [isExplorerModalOpen, setIsExplorerModalOpen] = useState(false);
 
   const handleStepChange = (step: number) => {
     // 确保步骤在有效范围内
@@ -1063,7 +925,7 @@ export default function Homepage() {
       setCurrentStep(step);
     }
   };
-  
+
   const renderStepContent = (currentStep: number) => {
     switch (currentStep) {
       case 1:
@@ -1082,7 +944,6 @@ export default function Homepage() {
         return null;
     }
   };
-
 
   return (
     <main className="flex-1 p-8 space-y-6">
@@ -1121,6 +982,8 @@ export default function Homepage() {
                 onPress={() => {
                   if (card.title === "建链") {
                     setIsSetupModalOpen(true);
+                  } else if (card.title === "管链") {
+                    setIsExplorerModalOpen(true);
                   }
                 }}
                 className={`${card.hoverColor} ${cardStyles.actionCard}`}
@@ -1230,6 +1093,16 @@ export default function Homepage() {
             </Card>
             <Card className={`${cardStyles.chartCard} col-span-12`}>
               <CardHeader className="px-6 py-4">
+                <h3 className="text-lg font-medium text-white">数据流向分析</h3>
+              </CardHeader>
+              <CardBody className="px-6 pb-6">
+                <div className="h-[800px]">
+                  <SankeyChart data={sankeyData} />
+                </div>
+              </CardBody>
+            </Card>
+            <Card className={`${cardStyles.chartCard} col-span-12`}>
+              <CardHeader className="px-6 py-4">
                 <h3 className="text-lg font-medium text-white">组织参与度</h3>
               </CardHeader>
               <CardBody className="px-6 pb-6">
@@ -1238,16 +1111,6 @@ export default function Homepage() {
                 </div>
               </CardBody>
             </Card>
-            <Card className={`${cardStyles.chartCard} col-span-12`}>
-            <CardHeader className="px-6 py-4">
-              <h3 className="text-lg font-medium text-white">数据流向分析</h3>
-            </CardHeader>
-            <CardBody className="px-6 pb-6">
-              <div className="h-[800px]">
-                <SankeyChart data={sankeyData} />
-              </div>
-            </CardBody>
-          </Card>
           </div>
         </div>
 
@@ -1438,9 +1301,21 @@ export default function Homepage() {
         </div>
       </div>
 
+      {/* 区块链浏览器 Modal */}
+      <Modal
+        isOpen={isExplorerModalOpen}
+        onClose={() => setIsExplorerModalOpen(false)}
+        size="xxl" // 使用全屏 Modal
+        title="区块链浏览器"
+      >
+        <div className="h-[80vh]">
+          {/* 设置高度确保内容可滚动 */}
+          <BlockExplorer />
+        </div>
+      </Modal>
 
       {/* Setup Modal with Stepper */}
-      <Modal 
+      <Modal
         isOpen={isSetupModalOpen}
         onClose={() => setIsSetupModalOpen(false)}
         title="建链向导"
@@ -1450,24 +1325,9 @@ export default function Homepage() {
           steps={setupSteps}
           currentStep={currentStep}
           onStepClick={handleStepChange}
+          onComplete={() => setIsSetupModalOpen(false)}
         >
           {renderStepContent(currentStep)}
-          {/* {currentStep === 4 && (
-            <ContractSelector
-              currentStep={currentStep}
-              totalSteps={setupSteps.length}
-              onPrevStep={() => setCurrentStep(currentStep - 1)}
-              onNextStep={() => {
-                if (currentStep < setupSteps.length) {
-                  setCurrentStep(currentStep + 1);
-                } else {
-                  // 处理完成逻辑
-                  console.log('完成设置');
-                }
-              }}
-            />
-          )} */}
-          {/* ... 其他步骤的内容 ... */}
         </Stepper>
       </Modal>
     </main>

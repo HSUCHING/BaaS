@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import * as d3Sankey from 'd3-sankey';
 
@@ -56,24 +56,89 @@ const processData = (rawData: SankeyDataItem[]) => {
 };
 
 export const SankeyChart: React.FC<SankeyProps> = ({ 
-  width = 1400, 
+  width = 1200, 
   height = 800,
   data 
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const animationRef = useRef<number>();
+  const tooltipRef = useRef<any>();
+  const sankeyLayoutRef = useRef<any>();
   
+  // 优化数据处理函数
+  const processedData = useMemo(() => {
+    return processData(data);
+  }, [data]);
+
+  // 优化的颜色方案
+  const colorScheme = [
+        '#1890FF', // 蓝色
+        '#FFB72B', // 金色
+        '#52C41A', // 绿色
+        '#722ED1', // 紫色
+        '#13C2C2', // 青色
+        '#FA8C16', // 橙色
+        '#EB2F96', // 粉色
+        '#2F54EB'  // 深蓝
+      ];
+
+  // 优化颜色比例尺
+  const color = useMemo(() => {
+    return d3.scaleOrdinal()
+      .range(colorScheme.map(c => d3.color(c)?.brighter(0.2)?.toString() || c));
+  }, []);
+
+  // 将 createParticles 移到组件顶层
+  const createParticles = useCallback((svg: any, pathLinks: any) => {
+    const upchainPaths = pathLinks.filter((d: any) => 
+      d.source.name === "上链数据" || d.target.name === "上链数据"
+    );
+
+    upchainPaths.each(function(d: any) {
+      const path = d3.select(this);
+      const pathData = d3Sankey.sankeyLinkHorizontal()(d);
+      path.attr("d", pathData);
+      
+      const pathNode = path.node() as SVGPathElement;
+      const pathLength = pathNode.getTotalLength();
+      const pathColor = path.attr("stroke");
+
+      // 减少粒子数量到 4 个
+      const particles = d3.range(4).map(() => ({
+        offset: Math.random() * pathLength,
+        element: svg.append("circle")
+          .attr("r", 2)
+          .attr("fill", pathColor)
+          .attr("opacity", 0.7)
+      }));
+
+      let lastTime = 0;
+      function moveParticles(timestamp: number) {
+        if (timestamp - lastTime > 16) {
+          particles.forEach(particle => {
+            particle.offset = (particle.offset + 0.5) % pathLength;
+            const point = pathNode.getPointAtLength(particle.offset);
+            particle.element.attr("transform", `translate(${point.x}, ${point.y})`);
+          });
+          lastTime = timestamp;
+        }
+        animationRef.current = requestAnimationFrame(moveParticles);
+      }
+
+      moveParticles(0);
+    });
+  }, []);
+
   useEffect(() => {
     if (!svgRef.current || !data) return;
 
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-    const processedData = processData(data);
 
     // 清除现有内容
     d3.select(svgRef.current).selectAll("*").remove();
 
     // 创建tooltip
-    const tooltip = d3.select("body")
+    tooltipRef.current = d3.select("body")
       .append("div")
       .attr("class", "sankey-tooltip")
       .style("position", "absolute")
@@ -93,31 +158,14 @@ export const SankeyChart: React.FC<SankeyProps> = ({
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // 优化的颜色方案
-    const colorScheme = [
-        '#1890FF', // 蓝色
-        '#FFB72B', // 金色
-        '#52C41A', // 绿色
-        '#722ED1', // 紫色
-        '#13C2C2', // 青色
-        '#FA8C16', // 橙色
-        '#EB2F96', // 粉色
-        '#2F54EB'  // 深蓝
-      ];
-
-
-    // 创建颜色比例尺
-    const color = d3.scaleOrdinal()
-      .range(colorScheme.map(c => d3.color(c)?.brighter(0.2)?.toString() || c));
-
     // 创建sankey布局
-    const sankeyLayout = d3Sankey.sankey()
+    sankeyLayoutRef.current = d3Sankey.sankey()
       .nodeWidth(15)
       .nodePadding(10)
       .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]]);
 
     // 生成sankey数据
-    const { nodes, links } = sankeyLayout(processedData);
+    const { nodes, links } = sankeyLayoutRef.current(processedData);
 
     // 创建节点
     svg.append("g")
@@ -131,7 +179,7 @@ export const SankeyChart: React.FC<SankeyProps> = ({
       .attr("fill", (d: any) => color(d.name))
       .attr("opacity", 0.8)
       .on("mouseover", function(event: any, d: any) {
-        tooltip
+        tooltipRef.current
           .style("visibility", "visible")
           .html(`
             <strong>${d.name}</strong><br/>
@@ -139,12 +187,12 @@ export const SankeyChart: React.FC<SankeyProps> = ({
           `);
       })
       .on("mousemove", function(event: any) {
-        tooltip
+        tooltipRef.current
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY - 10) + "px");
       })
       .on("mouseout", function() {
-        tooltip.style("visibility", "hidden");
+        tooltipRef.current.style("visibility", "hidden");
       });
 
     // 创建连接
@@ -158,7 +206,7 @@ export const SankeyChart: React.FC<SankeyProps> = ({
       .attr("opacity", 0.5)
       .attr("fill", "none")
       .on("mouseover", function(event: any, d: any) {
-        tooltip
+        tooltipRef.current
           .style("visibility", "visible")
           .html(`
             <strong>${d.source.name} → ${d.target.name}</strong><br/>
@@ -166,12 +214,12 @@ export const SankeyChart: React.FC<SankeyProps> = ({
           `);
       })
       .on("mousemove", function(event: any) {
-        tooltip
+        tooltipRef.current
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY - 10) + "px");
       })
       .on("mouseout", function() {
-        tooltip.style("visibility", "hidden");
+        tooltipRef.current.style("visibility", "hidden");
       });
 
     // 添加节点标签
@@ -187,56 +235,19 @@ export const SankeyChart: React.FC<SankeyProps> = ({
       .attr("fill", "#fff")
       .attr("font-size", "12px");
 
-    // 简化的粒子动画，只针对上链数据
-    const createParticles = () => {
-      const upchainPaths = pathLinks.filter((d: any) => 
-        d.source.name === "上链数据" || d.target.name === "上链数据"
-      );
+    // 在 useEffect 中调用 createParticles
+    requestAnimationFrame(() => createParticles(svg, pathLinks));
 
-      upchainPaths.each(function(d: any) {
-        const path = d3.select(this);
-        const pathData = d3Sankey.sankeyLinkHorizontal()(d);
-        path.attr("d", pathData);
-        
-        const pathNode = path.node() as SVGPathElement;
-        const pathLength = pathNode.getTotalLength();
-        const pathColor = path.attr("stroke");
-
-        // 增加粒子数量到 8 个
-        const particles = d3.range(6).map(() => ({
-          offset: Math.random() * pathLength,  // 随机初始位置
-          element: svg.append("circle")
-            .attr("r", 2)
-            .attr("fill", pathColor)
-            .attr("opacity", 0.7)
-        }));
-
-        // 使用 RAF 进行动画
-        function moveParticles() {
-          particles.forEach(particle => {
-            particle.offset = (particle.offset + 0.5) % pathLength;
-            const point = pathNode.getPointAtLength(particle.offset);
-            particle.element.attr("transform", `translate(${point.x}, ${point.y})`);
-          });
-          animationRef.current = requestAnimationFrame(moveParticles);
-        }
-
-        moveParticles();
-      });
-    };
-
-    // 确保在路径完全渲染后再创建粒子
-    requestAnimationFrame(createParticles);
-
-    // 清理函数
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      tooltip.remove();  // 确保清理 tooltip
+      tooltipRef.current.remove();
       d3.select(svgRef.current).selectAll("circle").remove();
     };
-  }, [data, width, height]);
+  }, [data, width, height, createParticles, processedData]);
+
+
 
   return (
     <div className="relative w-full h-full">

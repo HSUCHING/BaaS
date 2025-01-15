@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@nextui-org/react";
 
@@ -14,6 +14,7 @@ interface StepperProps {
   currentStep: number;
   onStepClick?: (stepId: number) => void;
   children: React.ReactNode;
+  onComplete?: () => void;
 }
 
 export default function Stepper({
@@ -21,6 +22,7 @@ export default function Stepper({
   currentStep,
   onStepClick,
   children,
+  onComplete,
 }: StepperProps) {
   // 计算每个步骤的状态
   const getStepStatus = (stepId: number): "complete" | "current" | "pending" => {
@@ -28,7 +30,6 @@ export default function Stepper({
     if (stepId === currentStep) return "current";
     return "pending";
   };
-
 
   return (
     <div className="flex gap-8 min-h-[600px]">
@@ -154,7 +155,14 @@ export default function Stepper({
 
             <Button
               color="primary"
-              onPress={() => onStepClick?.(currentStep + 1)}
+              onPress={() => {
+                if (currentStep === steps.length) {
+                  onComplete?.();
+                } else {
+                  // 否则继续下一步
+                  onStepClick?.(currentStep + 1);
+                }
+              }}
               endContent={
                 currentStep < steps.length ? (
                   <svg

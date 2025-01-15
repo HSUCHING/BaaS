@@ -93,20 +93,20 @@ export const ActivityRings: React.FC<ActivityRingsProps> = ({
 export const activityData: RingData[] = [
   {
     name: "参与方数量",
-    current: 75,
-    target: 100,
+    current: 9598,
+    target: 10000,
     color: "#ff375f"  // 红色
   },
   {
     name: "场景数量",
-    current: 45,
-    target: 50,
+    current: 108223,
+    target: 120000,
     color: "#30d158"  // 绿色
   },
   {
     name: "交易数量",
-    current: 8000,
-    target: 10000,
+    current: 962302,
+    target: 1000000,
     color: "#0a84ff"  // 蓝色
   }
 ]; 

@@ -6,7 +6,7 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 }
 
 export default function Modal({ 
@@ -37,6 +37,14 @@ export default function Modal({
     if (isOpen) {
       setIsClosing(false);
       setShouldRender(true);
+    } else {
+      // 添加这个 else 分支来处理 isOpen 变为 false 的情况
+      setIsClosing(true);
+      const timer = setTimeout(() => {
+        setIsClosing(false);
+        setShouldRender(false);
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -57,6 +65,7 @@ export default function Modal({
     md: 'max-w-lg',
     lg: 'max-w-3xl',
     xl: 'max-w-5xl',
+    xxl: 'max-w-7xl',
   };
 
   return (

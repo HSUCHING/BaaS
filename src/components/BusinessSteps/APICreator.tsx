@@ -277,7 +277,7 @@ export default function APICreator() {
           </Button>
         </Card>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center truncate">
           <span className="text-default-500">需要认证</span>
           <Switch
             defaultSelected
